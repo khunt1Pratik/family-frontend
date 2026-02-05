@@ -173,6 +173,17 @@ export default function AdminUpdateForm() {
     }
 
 
+    const newErrors = {};
+
+    if (formData.BusinessWebsite && !/^https?:\/\/.+\..+/.test(formData.BusinessWebsite)) {
+      newErrors.BusinessWebsite = "Enter a valid website URL (https://...)";
+    }
+
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length > 0) return;
+
+
     setLoading(true);
 
 
