@@ -404,348 +404,349 @@ export default function AdminUpdateForm() {
                 </div>
 
                 <div className="row g-3 mb-4">
+                  <div className="row g-3 mb-4">
+                    <div className="col-md-6">
+                      <label className="form-label fw-semibold" style={{ color: colors.neutral.text }}>
+                        Business Website
+                      </label>
+                      <input
+                        type="url"
+                        className="form-control"
+                        name="BusinessWebsite"
+                        value={formData.BusinessWebsite}
+                        onChange={handleChange}
+                        placeholder="https://example.com"
+                        style={{
+                          borderRadius: "8px",
+                          borderColor: errors.BusinessWebsite ? "#dc3545" : colors.neutral.border,
+                          color: colors.neutral.textLight
+                        }}
+                      />
+
+                      {/* ✅ Error Message */}
+                      {errors.BusinessWebsite && (
+                        <small className="text-danger">{errors.BusinessWebsite}</small>
+                      )}
+                    </div>
+                  </div>
+
+
                   <div className="col-md-6">
                     <label className="form-label fw-semibold" style={{ color: colors.neutral.text }}>
-                      Business Website
+                      Business Address
                     </label>
                     <input
-                      type="url"
+                      type="text"
                       className="form-control"
-                      name="BusinessWebsite"
-                      value={formData.BusinessWebsite}
+                      name="BusinessAddress"
+                      value={formData.BusinessAddress}
                       onChange={handleChange}
-                      placeholder="https://example.com"
+                      placeholder="Enter business address"
                       style={{
                         borderRadius: "8px",
-                        borderColor: errors.BusinessWebsite ? "#dc3545" : colors.neutral.border,
+                        borderColor: colors.neutral.border,
                         color: colors.neutral.textLight
                       }}
                     />
-
-                    {/* ✅ Error Message */}
-                    {errors.BusinessWebsite && (
-                      <small className="text-danger">{errors.BusinessWebsite}</small>
-                    )}
                   </div>
                 </div>
 
-
-                <div className="col-md-6">
+                <div className="mb-4">
                   <label className="form-label fw-semibold" style={{ color: colors.neutral.text }}>
-                    Business Address
+                    Business Description
                   </label>
-                  <input
-                    type="text"
+                  <textarea
                     className="form-control"
-                    name="BusinessAddress"
-                    value={formData.BusinessAddress}
+                    name="BusinessDescription"
+                    value={formData.BusinessDescription}
                     onChange={handleChange}
-                    placeholder="Enter business address"
+                    placeholder="Describe your business..."
+                    rows="4"
+                    maxLength={500}
                     style={{
                       borderRadius: "8px",
                       borderColor: colors.neutral.border,
                       color: colors.neutral.textLight
                     }}
                   />
+                  {errors.BusinessDescription && <small className="text-danger">{errors.BusinessDescription}</small>}
+                  <small className="text-muted">
+                    {formData.BusinessDescription.length}/500 characters
+                  </small>
                 </div>
               </div>
 
-              <div className="mb-4">
-                <label className="form-label fw-semibold" style={{ color: colors.neutral.text }}>
-                  Business Description
-                </label>
-                <textarea
-                  className="form-control"
-                  name="BusinessDescription"
-                  value={formData.BusinessDescription}
-                  onChange={handleChange}
-                  placeholder="Describe your business..."
-                  rows="4"
-                  maxLength={500}
-                  style={{
-                    borderRadius: "8px",
-                    borderColor: colors.neutral.border,
-                    color: colors.neutral.textLight
-                  }}
-                />
-                {errors.BusinessDescription && <small className="text-danger">{errors.BusinessDescription}</small>}
-                <small className="text-muted">
-                  {formData.BusinessDescription.length}/500 characters
-                </small>
-              </div>
-          </div>
+              {/* Keywords Section */}
+              <div className="mb-5">
+                <h3 className="mb-3 pb-2 border-bottom" style={{
+                  color: colors.neutral.text,
+                  fontWeight: "600",
+                  fontSize: "1.1rem",
+                  borderColor: colors.neutral.border + " !important",
+                  borderWidth: "1px !important"
+                }}>
+                  Keywords & Tags
+                </h3>
 
-          {/* Keywords Section */}
-          <div className="mb-5">
-            <h3 className="mb-3 pb-2 border-bottom" style={{
-              color: colors.neutral.text,
-              fontWeight: "600",
-              fontSize: "1.1rem",
-              borderColor: colors.neutral.border + " !important",
-              borderWidth: "1px !important"
-            }}>
-              Keywords & Tags
-            </h3>
-
-            <div className="mb-3">
-              <label className="form-label fw-semibold" style={{ color: colors.neutral.text }}>
-                Add Keywords
-              </label>
-              <select
-                className="form-select mb-3"
-                onChange={(e) => {
-                  const kid = Number(e.target.value);
-                  if (!kid) return;
-                  if (!formData.keywordIds.includes(kid)) {
-                    setFormData((p) => ({
-                      ...p,
-                      keywordIds: [...p.keywordIds, kid]
-                    }));
-                  }
-                  e.target.value = "";
-                }}
-                style={{
-                  borderRadius: "8px",
-                  borderColor: colors.neutral.border,
-                  color: colors.neutral.textLight
-                }}
-              >
-                <option value="">+ Add a keyword</option>
-                {allKeywords.map((k) => (
-                  <option
-                    key={k.id}
-                    value={k.id}
-                    disabled={formData.keywordIds.includes(k.id)}
+                <div className="mb-3">
+                  <label className="form-label fw-semibold" style={{ color: colors.neutral.text }}>
+                    Add Keywords
+                  </label>
+                  <select
+                    className="form-select mb-3"
+                    onChange={(e) => {
+                      const kid = Number(e.target.value);
+                      if (!kid) return;
+                      if (!formData.keywordIds.includes(kid)) {
+                        setFormData((p) => ({
+                          ...p,
+                          keywordIds: [...p.keywordIds, kid]
+                        }));
+                      }
+                      e.target.value = "";
+                    }}
+                    style={{
+                      borderRadius: "8px",
+                      borderColor: colors.neutral.border,
+                      color: colors.neutral.textLight
+                    }}
                   >
-                    {k.keyword_name}
-                    {formData.keywordIds.includes(k.id) && " ✓"}
-                  </option>
-                ))}
-              </select>
+                    <option value="">+ Add a keyword</option>
+                    {allKeywords.map((k) => (
+                      <option
+                        key={k.id}
+                        value={k.id}
+                        disabled={formData.keywordIds.includes(k.id)}
+                      >
+                        {k.keyword_name}
+                        {formData.keywordIds.includes(k.id) && " ✓"}
+                      </option>
+                    ))}
+                  </select>
+
+                  {errors.keywordIds && <small className="text-danger d-block mt-2">{errors.keywordIds}</small>}
+
+
+                  <div className="d-flex flex-wrap gap-2 p-3 border rounded" style={{
+                    minHeight: "100px",
+                    backgroundColor: colors.neutral.cardHeader + "40",
+                    borderColor: colors.neutral.borderLight + " !important"
+                  }}>
+                    {formData.keywordIds.map((id) => (
+                      <span
+                        key={id}
+                        className="badge d-flex align-items-center gap-2 px-3 py-2"
+                        style={{
+                          backgroundColor: colors.primary.bg,
+                          color: colors.primary.main,
+                          fontSize: "0.875rem",
+                          borderRadius: "20px"
+                        }}
+                      >
+                        {getKeywordName(id)}
+                        <button
+                          type="button"
+                          className="btn-close btn-close-sm"
+                          onClick={() => removeKeyword(id)}
+                          style={{ fontSize: "0.6rem" }}
+                        ></button>
+                      </span>
+                    ))}
+                    {formData.keywordIds.length === 0 && (
+                      <span className="text-muted">No keywords added yet</span>
+                    )}
+                  </div>
+                </div>
+              </div>
 
               {errors.keywordIds && <small className="text-danger d-block mt-2">{errors.keywordIds}</small>}
 
 
-              <div className="d-flex flex-wrap gap-2 p-3 border rounded" style={{
-                minHeight: "100px",
-                backgroundColor: colors.neutral.cardHeader + "40",
-                borderColor: colors.neutral.borderLight + " !important"
-              }}>
-                {formData.keywordIds.map((id) => (
-                  <span
-                    key={id}
-                    className="badge d-flex align-items-center gap-2 px-3 py-2"
-                    style={{
-                      backgroundColor: colors.primary.bg,
-                      color: colors.primary.main,
-                      fontSize: "0.875rem",
-                      borderRadius: "20px"
+              {/* Media Section */}
+              <div className="mb-5">
+                <h3 className="mb-3 pb-2 border-bottom" style={{
+                  color: colors.neutral.text,
+                  fontWeight: "600",
+                  fontSize: "1.1rem",
+                  borderColor: colors.neutral.border + " !important",
+                  borderWidth: "1px !important"
+                }}>
+                  Media Files
+                </h3>
+
+                <div className="row g-4">
+                  <div className="col-md-6">
+                    <label className="form-label fw-semibold" style={{ color: colors.neutral.text }}>
+                      Business Logo
+                    </label>
+                    <div className="text-center mb-3">
+                      <div className="d-inline-block position-relative">
+                        <div className="border rounded p-3" style={{
+                          width: "150px",
+                          height: "150px",
+                          backgroundColor: colors.neutral.cardHeader,
+                          borderColor: colors.neutral.border + " !important"
+                        }}>
+                          {previewLogo ? (
+                            <img src={previewLogo} alt="Logo Preview" className="w-100 h-100 object-fit-contain" />
+                          ) : existingImages.BusinessLogo ? (
+                            <img src={existingImages.BusinessLogo} alt="Current Logo" className="w-100 h-100 object-fit-contain" />
+                          ) : (
+                            <div className="d-flex align-items-center justify-content-center h-100">
+                              <FiCamera style={{ color: colors.neutral.textLight, fontSize: "2rem" }} />
+                            </div>
+                          )}
+                        </div>
+                        {(previewLogo || existingImages.BusinessLogo) && (
+                          <button
+                            type="button"
+                            className="btn btn-sm position-absolute top-0 end-0 translate-middle rounded-circle"
+                            onClick={clearLogo}
+                            style={{ backgroundColor: "#dc3545", color: "white", width: "24px", height: "24px", padding: 0 }}
+                          >
+                            ×
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                    <input
+                      type="file"
+                      className="form-control"
+                      name="BusinessLogo"
+                      onChange={handleFileChange}
+                      accept="image/*"
+                      style={{
+                        borderRadius: "8px",
+                        borderColor: colors.neutral.border
+                      }}
+                    />
+                    <small className="text-muted">PNG, JPG, SVG - Max 2MB</small>
+                  </div>
+
+                  <div className="col-md-6">
+                    <label className="form-label fw-semibold" style={{ color: colors.neutral.text }}>
+                      Business Card
+                    </label>
+                    <div className="text-center mb-3">
+                      <div className="d-inline-block position-relative">
+                        <div className="border rounded p-3" style={{
+                          width: "200px",
+                          height: "120px",
+                          backgroundColor: colors.neutral.cardHeader,
+                          borderColor: colors.neutral.border + " !important"
+                        }}>
+                          {previewCard ? (
+                            <img src={previewCard} alt="Card Preview" className="w-100 h-100 object-fit-contain" />
+                          ) : existingImages.BusinessCard ? (
+                            <img src={existingImages.BusinessCard} alt="Current Card" className="w-100 h-100 object-fit-contain" />
+                          ) : (
+                            <div className="d-flex align-items-center justify-content-center h-100">
+                              <FiBriefcase style={{ color: colors.neutral.textLight, fontSize: "2rem" }} />
+                            </div>
+                          )}
+                        </div>
+                        {(previewCard || existingImages.BusinessCard) && (
+                          <button
+                            type="button"
+                            className="btn btn-sm position-absolute top-0 end-0 translate-middle rounded-circle"
+                            onClick={clearBusinessCard}
+                            style={{ backgroundColor: "#dc3545", color: "white", width: "24px", height: "24px", padding: 0 }}
+                          >
+                            ×
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                    <input
+                      type="file"
+                      className="form-control"
+                      name="BusinessCard"
+                      onChange={handleFileChange}
+                      accept="image/*,.pdf"
+                      style={{
+                        borderRadius: "8px",
+                        borderColor: colors.neutral.border
+                      }}
+                    />
+                    <small className="text-muted">PNG, JPG, PDF - Max 5MB</small>
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="d-flex justify-content-between align-items-center pt-4 border-top" style={{ borderColor: colors.neutral.border + " !important" }}>
+                <button
+                  type="button"
+                  onClick={() => navigate("/AdminBusinessList")}
+                  className="btn"
+                  style={{
+                    color: colors.neutral.text,
+                    backgroundColor: colors.neutral.cardHeader,
+                    borderColor: colors.neutral.border,
+                    borderRadius: "8px",
+                    padding: "10px 30px"
+                  }}
+                  disabled={loading}
+                >
+                  Cancel
+                </button>
+
+                <div className="d-flex gap-3">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setFiles({ BusinessLogo: null, BusinessCard: null });
+                      setPreviewLogo(null);
+                      setPreviewCard(null);
                     }}
+                    className="btn"
+                    style={{
+                      color: colors.secondary.dark,
+                      backgroundColor: colors.secondary.light + "40",
+                      borderColor: colors.secondary.main,
+                      borderRadius: "8px",
+                      padding: "10px 25px"
+                    }}
+                    disabled={loading}
                   >
-                    {getKeywordName(id)}
-                    <button
-                      type="button"
-                      className="btn-close btn-close-sm"
-                      onClick={() => removeKeyword(id)}
-                      style={{ fontSize: "0.6rem" }}
-                    ></button>
-                  </span>
-                ))}
-                {formData.keywordIds.length === 0 && (
-                  <span className="text-muted">No keywords added yet</span>
-                )}
-              </div>
-            </div>
-          </div>
+                    Reset Changes
+                  </button>
 
-          {errors.keywordIds && <small className="text-danger d-block mt-2">{errors.keywordIds}</small>}
-
-
-          {/* Media Section */}
-          <div className="mb-5">
-            <h3 className="mb-3 pb-2 border-bottom" style={{
-              color: colors.neutral.text,
-              fontWeight: "600",
-              fontSize: "1.1rem",
-              borderColor: colors.neutral.border + " !important",
-              borderWidth: "1px !important"
-            }}>
-              Media Files
-            </h3>
-
-            <div className="row g-4">
-              <div className="col-md-6">
-                <label className="form-label fw-semibold" style={{ color: colors.neutral.text }}>
-                  Business Logo
-                </label>
-                <div className="text-center mb-3">
-                  <div className="d-inline-block position-relative">
-                    <div className="border rounded p-3" style={{
-                      width: "150px",
-                      height: "150px",
-                      backgroundColor: colors.neutral.cardHeader,
-                      borderColor: colors.neutral.border + " !important"
-                    }}>
-                      {previewLogo ? (
-                        <img src={previewLogo} alt="Logo Preview" className="w-100 h-100 object-fit-contain" />
-                      ) : existingImages.BusinessLogo ? (
-                        <img src={existingImages.BusinessLogo} alt="Current Logo" className="w-100 h-100 object-fit-contain" />
-                      ) : (
-                        <div className="d-flex align-items-center justify-content-center h-100">
-                          <FiCamera style={{ color: colors.neutral.textLight, fontSize: "2rem" }} />
-                        </div>
-                      )}
-                    </div>
-                    {(previewLogo || existingImages.BusinessLogo) && (
-                      <button
-                        type="button"
-                        className="btn btn-sm position-absolute top-0 end-0 translate-middle rounded-circle"
-                        onClick={clearLogo}
-                        style={{ backgroundColor: "#dc3545", color: "white", width: "24px", height: "24px", padding: 0 }}
-                      >
-                        ×
-                      </button>
+                  <button
+                    type="submit"
+                    className="btn text-white fw-bold"
+                    style={{
+                      backgroundColor: colors.primary.main,
+                      borderRadius: "8px",
+                      padding: "10px 35px"
+                    }}
+                    disabled={loading}
+                  >
+                    {loading ? (
+                      <>
+                        <span className="spinner-border spinner-border-sm me-2" role="status"></span>
+                        Updating...
+                      </>
+                    ) : (
+                      <>
+                        <FiCheck className="me-2" />
+                        Update Business
+                      </>
                     )}
-                  </div>
+                  </button>
                 </div>
-                <input
-                  type="file"
-                  className="form-control"
-                  name="BusinessLogo"
-                  onChange={handleFileChange}
-                  accept="image/*"
-                  style={{
-                    borderRadius: "8px",
-                    borderColor: colors.neutral.border
-                  }}
-                />
-                <small className="text-muted">PNG, JPG, SVG - Max 2MB</small>
               </div>
-
-              <div className="col-md-6">
-                <label className="form-label fw-semibold" style={{ color: colors.neutral.text }}>
-                  Business Card
-                </label>
-                <div className="text-center mb-3">
-                  <div className="d-inline-block position-relative">
-                    <div className="border rounded p-3" style={{
-                      width: "200px",
-                      height: "120px",
-                      backgroundColor: colors.neutral.cardHeader,
-                      borderColor: colors.neutral.border + " !important"
-                    }}>
-                      {previewCard ? (
-                        <img src={previewCard} alt="Card Preview" className="w-100 h-100 object-fit-contain" />
-                      ) : existingImages.BusinessCard ? (
-                        <img src={existingImages.BusinessCard} alt="Current Card" className="w-100 h-100 object-fit-contain" />
-                      ) : (
-                        <div className="d-flex align-items-center justify-content-center h-100">
-                          <FiBriefcase style={{ color: colors.neutral.textLight, fontSize: "2rem" }} />
-                        </div>
-                      )}
-                    </div>
-                    {(previewCard || existingImages.BusinessCard) && (
-                      <button
-                        type="button"
-                        className="btn btn-sm position-absolute top-0 end-0 translate-middle rounded-circle"
-                        onClick={clearBusinessCard}
-                        style={{ backgroundColor: "#dc3545", color: "white", width: "24px", height: "24px", padding: 0 }}
-                      >
-                        ×
-                      </button>
-                    )}
-                  </div>
-                </div>
-                <input
-                  type="file"
-                  className="form-control"
-                  name="BusinessCard"
-                  onChange={handleFileChange}
-                  accept="image/*,.pdf"
-                  style={{
-                    borderRadius: "8px",
-                    borderColor: colors.neutral.border
-                  }}
-                />
-                <small className="text-muted">PNG, JPG, PDF - Max 5MB</small>
-              </div>
-            </div>
+            </form>
           </div>
 
-          {/* Action Buttons */}
-          <div className="d-flex justify-content-between align-items-center pt-4 border-top" style={{ borderColor: colors.neutral.border + " !important" }}>
-            <button
-              type="button"
-              onClick={() => navigate("/AdminBusinessList")}
-              className="btn"
-              style={{
-                color: colors.neutral.text,
-                backgroundColor: colors.neutral.cardHeader,
-                borderColor: colors.neutral.border,
-                borderRadius: "8px",
-                padding: "10px 30px"
-              }}
-              disabled={loading}
-            >
-              Cancel
-            </button>
-
-            <div className="d-flex gap-3">
-              <button
-                type="button"
-                onClick={() => {
-                  setFiles({ BusinessLogo: null, BusinessCard: null });
-                  setPreviewLogo(null);
-                  setPreviewCard(null);
-                }}
-                className="btn"
-                style={{
-                  color: colors.secondary.dark,
-                  backgroundColor: colors.secondary.light + "40",
-                  borderColor: colors.secondary.main,
-                  borderRadius: "8px",
-                  padding: "10px 25px"
-                }}
-                disabled={loading}
-              >
-                Reset Changes
-              </button>
-
-              <button
-                type="submit"
-                className="btn text-white fw-bold"
-                style={{
-                  backgroundColor: colors.primary.main,
-                  borderRadius: "8px",
-                  padding: "10px 35px"
-                }}
-                disabled={loading}
-              >
-                {loading ? (
-                  <>
-                    <span className="spinner-border spinner-border-sm me-2" role="status"></span>
-                    Updating...
-                  </>
-                ) : (
-                  <>
-                    <FiCheck className="me-2" />
-                    Update Business
-                  </>
-                )}
-              </button>
-            </div>
+          {/* Footer Note */}
+          <div className="card-footer text-center py-3" style={{ backgroundColor: colors.neutral.cardHeader }}>
+            <small style={{ color: colors.neutral.textLight }}>
+              <span style={{ color: "#dc3545" }}>*</span> indicates required fields
+            </small>
           </div>
-        </form>
-      </div>
-
-      {/* Footer Note */}
-      <div className="card-footer text-center py-3" style={{ backgroundColor: colors.neutral.cardHeader }}>
-        <small style={{ color: colors.neutral.textLight }}>
-          <span style={{ color: "#dc3545" }}>*</span> indicates required fields
-        </small>
+        </div>
       </div>
     </div>
-      </div >
-    </div >
   );
 }
