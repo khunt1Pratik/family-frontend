@@ -399,7 +399,7 @@ export default function AdminUpdateForm() {
                       ))}
                     </select>
 
-                    {errors.categoryid  && <small className="text-danger">{errors.categoryid }</small>}
+                    {errors.categoryid && <small className="text-danger">{errors.categoryid}</small>}
                   </div>
                 </div>
 
@@ -421,8 +421,8 @@ export default function AdminUpdateForm() {
                         color: colors.neutral.textLight
                       }}
                     />
-                    {errors.BusinessWebsite && <small className="text-danger">{errors.BusinessWebsite}</small>}
                   </div>
+                  {errors.BusinessWebsite && <small className="text-danger">{errors.BusinessWebsite}</small>}
 
                   <div className="col-md-6">
                     <label className="form-label fw-semibold" style={{ color: colors.neutral.text }}>
