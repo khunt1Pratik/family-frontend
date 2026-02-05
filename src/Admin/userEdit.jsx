@@ -7,7 +7,7 @@ export default function UpdateUser() {
 
   const token = localStorage.getItem("token");
 
-    const { state } = useLocation();
+  const { state } = useLocation();
   const { id: paramId } = useParams();
   const id = state?.id || paramId;
 
@@ -25,8 +25,14 @@ export default function UpdateUser() {
     ConfirmPassword: "",
   });
 
-  const [message, setMessage] = useState("");
-  const [messageType, setMessageType] = useState("success");
+
+
+  const [apiMessage, setApiMessage] = useState("");
+  const [apiMessageType, setApiMessageType] = useState(""); // success | danger
+  const [formError, setFormError] = useState(""); // validation only
+
+
+
 
   useEffect(() => {
     if (!token || !id) {
@@ -49,8 +55,8 @@ export default function UpdateUser() {
 
 
         if (!res.ok) {
-          setMessage(data.message || "Failed to fetch user");
-          setMessageType("danger");
+          setApiMessage(data.message || "Failed to fetch user");
+          setApiMessageType("danger");
           return;
         }
 
@@ -67,8 +73,8 @@ export default function UpdateUser() {
         });
       } catch (err) {
         console.error("Fetch error:", err);
-        setMessage("Server error");
-        setMessageType("danger");
+        setApiMessage("Server error");
+        setApiMessageType("danger");
       }
     };
 
@@ -83,61 +89,118 @@ export default function UpdateUser() {
     });
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  setMessage("");
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   setMessage("");
 
-  // ✅ Password match check
-  if (formData.password || formData.ConfirmPassword) {
-    if (formData.password !== formData.ConfirmPassword) {
-      setMessage("Password and Confirm Password do not match");
-      setMessageType("danger");
-      return;
+  //   // ✅ Password match check
+  //   if (formData.password || formData.ConfirmPassword) {
+  //     if (formData.password !== formData.ConfirmPassword) {
+  //       setMessage("Password and Confirm Password do not match");
+  //       setMessageType("danger");
+  //       return;
+  //     }
+  //   }
+
+  //   // remove ConfirmPassword before sending
+  //   const { ConfirmPassword, ...submitData } = formData;
+
+  //   try {
+  //     const res = await fetch(`${API_URL}/user/update/${id}`, {
+  //       method: "PUT",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         Authorization: `Bearer ${token}`,
+  //         "x-api-key": getEncryptedToken()
+  //       },
+  //       body: JSON.stringify(submitData),
+  //     });
+
+  //     // ✅ SAFE RESPONSE HANDLING
+  //     let result = {};
+  //     const text = await res.text();
+  //     if (text) {
+  //       result = JSON.parse(text);
+  //     }
+
+  //     if (!res.ok) {
+  //       setMessage(result.message || "Update failed");
+  //       setMessageType("danger");
+  //       return;
+  //     }
+
+  //     // ✅ SUCCESS
+  //     setMessage(result.message || "Profile updated successfully");
+  //     setMessageType("success");
+
+
+  //     setTimeout(() => {
+  //       navigate("/userList");
+  //     }, 1500);
+
+  //   } catch (error) {
+  //     console.error("Update Error:", error.message);
+  //     setMessage(error.message || "Server error", );
+  //     setMessageType("danger");
+  //   }
+  // };
+
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setApiMessage("");
+    setFormError("");
+
+    // ✅ Client-side validation
+    if (formData.password || formData.ConfirmPassword) {
+      if (formData.password !== formData.ConfirmPassword) {
+        setFormError("Password and Confirm Password do not match");
+        return;
+      }
     }
-  }
 
-  // remove ConfirmPassword before sending
-  const { ConfirmPassword, ...submitData } = formData;
+    const { ConfirmPassword, ...submitData } = formData;
 
-  try {
-    const res = await fetch(`${API_URL}/user/update/${id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-        "x-api-key": getEncryptedToken()
-      },
-      body: JSON.stringify(submitData),
-    });
+    try {
+      const res = await fetch(`${API_URL}/user/update/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+          "x-api-key": getEncryptedToken()
+        },
+        body: JSON.stringify(submitData),
+      });
 
-    // ✅ SAFE RESPONSE HANDLING
-    let result = {};
-    const text = await res.text();
-    if (text) {
-      result = JSON.parse(text);
+      let result = {};
+      const text = await res.text();
+      if (text) {
+        try {
+          result = JSON.parse(text);
+        } catch {
+          result = { message: text };
+        }
+      }
+
+      if (!res.ok) {
+        setApiMessage(result.message || "Update failed");
+        setApiMessageType("danger");
+        return;
+      }
+
+      setApiMessage(result.message || "Profile updated successfully");
+      setApiMessageType("success");
+
+      setTimeout(() => {
+        navigate("/userList");
+      }, 1500);
+
+    } catch (error) {
+      setApiMessage(error.message || "Server error. Please try again.");
+      setApiMessageType("danger");
     }
+  };
 
-    if (!res.ok) {
-      setMessage(result.message || "Update failed");
-      setMessageType("danger");
-      return;
-    }
-
-    // ✅ SUCCESS
-    setMessage(result.message || "Profile updated successfully");
-    setMessageType("success");
-
-
-    setTimeout(() => {
-      navigate("/userList");
-    }, 1500);
-
-  } catch (error) {
-    console.error("Update Error:", error);
-    setMessage("Server error");
-    setMessageType("danger");
-  }
-};
 
 
   return (
@@ -187,18 +250,20 @@ const handleSubmit = async (e) => {
 
             <div className="card-body p-4 p-md-5">
               {/* Alert Message */}
-              {message && (
-                <div
-                  className={`alert alert-${messageType} alert-dismissible fade show mb-4`}
-                >
-                  {message}
-                  <button
-                    type="button"
-                    className="btn-close"
-                    onClick={() => setMessage("")}
-                  ></button>
+
+
+              {apiMessage && (
+                <div className={`alert alert-${apiMessageType}`} role="alert">
+                  {apiMessageType === "success" ? "✅" : "❌"} {apiMessage}
                 </div>
               )}
+
+              {formError && (
+                <div className="alert alert-danger" role="alert">
+                  ❌ {formError}
+                </div>
+              )}
+
 
               <form onSubmit={handleSubmit}>
                 <div className="row">

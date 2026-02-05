@@ -63,7 +63,7 @@ export default function AdminFamilyList() {
     if (!window.confirm("Delete this record?")) return;
 
     try {
-      await fetch(`${API_URL}/business${id}`, { method: "DELETE" ,
+      await fetch(`${API_URL}/business/${id}`, { method: "DELETE" ,
          headers: {
      Authorization: `Bearer ${token}`,
        "x-api-key": getEncryptedToken()

@@ -19,7 +19,7 @@ export default function AdminUpdateForm() {
   const [previewLogo, setPreviewLogo] = useState(null);
   const [previewCard, setPreviewCard] = useState(null);
 
-  const [errors, setErrors] = useState({});
+
 
 
   const [formData, setFormData] = useState({
@@ -167,28 +167,7 @@ export default function AdminUpdateForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!validateForm()) {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-      return;
-    }
-
-
-    const newErrors = {};
-
-    if (formData.BusinessWebsite && !/^https?:\/\/.+\..+/.test(formData.BusinessWebsite)) {
-      newErrors.BusinessWebsite = "Enter a valid website URL (https://...)";
-    }
-
-    setErrors(newErrors);
-
-    if (Object.keys(newErrors).length > 0) return;
-
-
     setLoading(true);
-
-
-
-
 
     try {
       const fd = new FormData();
@@ -247,6 +226,7 @@ export default function AdminUpdateForm() {
     } catch (err) {
       console.error("Update failed:", err);
       alert("Failed to update business. Please try again.");
+      alert(err.message);
     } finally {
       setLoading(false);
     }
@@ -270,52 +250,7 @@ export default function AdminUpdateForm() {
     );
   }
 
-  const validateForm = () => {
-    const newErrors = {};
 
-    if (!formData.BusinessName.trim()) {
-      newErrors.BusinessName = "Business name is required";
-    }
-
-    if (!formData.categoryid) {
-      newErrors.categoryid = "Please select a category";
-    }
-
-    if (formData.BusinessWebsite && !/^https?:\/\/.+\..+/.test(formData.BusinessWebsite)) {
-      newErrors.BusinessWebsite = "Enter a valid website URL (https://...)";
-    }
-
-    if (formData.BusinessDescription.length > 500) {
-      newErrors.BusinessDescription = "Description cannot exceed 500 characters";
-    }
-
-    if (files.BusinessLogo) {
-      const allowed = ["image/png", "image/jpeg", "image/jpg", "image/svg+xml"];
-      if (!allowed.includes(files.BusinessLogo.type)) {
-        newErrors.BusinessLogo = "Logo must be PNG, JPG, or SVG";
-      }
-      if (files.BusinessLogo.size > 2 * 1024 * 1024) {
-        newErrors.BusinessLogo = "Logo size must be less than 2MB";
-      }
-    }
-
-    if (files.BusinessCard) {
-      const allowed = ["image/png", "image/jpeg", "application/pdf"];
-      if (!allowed.includes(files.BusinessCard.type)) {
-        newErrors.BusinessCard = "Business card must be PNG, JPG, or PDF";
-      }
-      if (files.BusinessCard.size > 5 * 1024 * 1024) {
-        newErrors.BusinessCard = "Business card size must be less than 5MB";
-      }
-    }
-
-    if (formData.keywordIds.length === 0) {
-      newErrors.keywordIds = "Please add at least one keyword";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
 
 
   return (
@@ -360,85 +295,79 @@ export default function AdminUpdateForm() {
                 }}>
                   Business Information
                 </h3>
+              </div>
+              <div className="row g-3 mb-4">
+                <div className="col-md-6">
+                  <label className="form-label fw-semibold" style={{ color: colors.neutral.text }}>
+                    <span style={{ color: "#dc3545" }}>*</span> Business Name
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="BusinessName"
+                    value={formData.BusinessName}
+                    onChange={handleChange}
+                    placeholder="Enter business name"
+                    required
+                    style={{
+                      borderRadius: "8px",
+                      borderColor: colors.neutral.border,
+                      color: colors.neutral.textLight
+                    }}
+                  />
+                </div>
 
+
+
+
+
+                <div className="col-md-6">
+                  <label className="form-label fw-semibold" style={{ color: colors.neutral.text }}>
+                    <span style={{ color: "#dc3545" }}>*</span> Category
+                  </label>
+                  <select
+                    className="form-select"
+                    name="categoryid"
+                    value={formData.categoryid}
+                    onChange={handleChange}
+                    required
+                    style={{
+                      borderRadius: "8px",
+                      borderColor: colors.neutral.border,
+                      color: colors.neutral.textLight
+                    }}
+                  >
+                    <option value="">Select Category</option>
+                    {categories.map((c) => (
+                      <option key={c.categoryid} value={c.categoryid}>
+                        {c.categoryName}
+                      </option>
+                    ))}
+                  </select>
+
+
+                </div>
+              </div>
+
+              <div className="row g-3 mb-4">
                 <div className="row g-3 mb-4">
                   <div className="col-md-6">
                     <label className="form-label fw-semibold" style={{ color: colors.neutral.text }}>
-                      <span style={{ color: "#dc3545" }}>*</span> Business Name
+                      Business Website
                     </label>
                     <input
                       type="text"
                       className="form-control"
-                      name="BusinessName"
-                      value={formData.BusinessName}
+                      name="BusinessWebsite"
+                      value={formData.BusinessWebsite}
                       onChange={handleChange}
-                      placeholder="Enter business name"
-                      required
+                      placeholder="https://example.com"
                       style={{
                         borderRadius: "8px",
                         borderColor: colors.neutral.border,
                         color: colors.neutral.textLight
                       }}
                     />
-                  </div>
-
-                  {errors.BusinessName && <small className="text-danger">{errors.BusinessName}</small>}
-
-
-
-                  <div className="col-md-6">
-                    <label className="form-label fw-semibold" style={{ color: colors.neutral.text }}>
-                      <span style={{ color: "#dc3545" }}>*</span> Category
-                    </label>
-                    <select
-                      className="form-select"
-                      name="categoryid"
-                      value={formData.categoryid}
-                      onChange={handleChange}
-                      required
-                      style={{
-                        borderRadius: "8px",
-                        borderColor: colors.neutral.border,
-                        color: colors.neutral.textLight
-                      }}
-                    >
-                      <option value="">Select Category</option>
-                      {categories.map((c) => (
-                        <option key={c.categoryid} value={c.categoryid}>
-                          {c.categoryName}
-                        </option>
-                      ))}
-                    </select>
-
-                    {errors.categoryid && <small className="text-danger">{errors.categoryid}</small>}
-                  </div>
-                </div>
-
-                <div className="row g-3 mb-4">
-                  <div className="row g-3 mb-4">
-                    <div className="col-md-6">
-                      <label className="form-label fw-semibold" style={{ color: colors.neutral.text }}>
-                        Business Website
-                      </label>
-                      <input
-                        type="url"
-                        className="form-control"
-                        name="BusinessWebsite"
-                        value={formData.BusinessWebsite}
-                        onChange={handleChange}
-                        placeholder="https://example.com"
-                        style={{
-                          borderRadius: "8px",
-                          borderColor: errors.BusinessWebsite ? "#dc3545" : colors.neutral.border,
-                          color: colors.neutral.textLight
-                        }}
-                      />
-
-                      {/* ✅ Error Message */}
-                      {errors.BusinessWebsite && (
-                        <small className="text-danger">{errors.BusinessWebsite}</small>
-                      )}
-                    </div>
                   </div>
 
 
@@ -459,6 +388,7 @@ export default function AdminUpdateForm() {
                         color: colors.neutral.textLight
                       }}
                     />
+
                   </div>
                 </div>
 
@@ -480,7 +410,7 @@ export default function AdminUpdateForm() {
                       color: colors.neutral.textLight
                     }}
                   />
-                  {errors.BusinessDescription && <small className="text-danger">{errors.BusinessDescription}</small>}
+
                   <small className="text-muted">
                     {formData.BusinessDescription.length}/500 characters
                   </small>
@@ -535,7 +465,7 @@ export default function AdminUpdateForm() {
                     ))}
                   </select>
 
-                  {errors.keywordIds && <small className="text-danger d-block mt-2">{errors.keywordIds}</small>}
+
 
 
                   <div className="d-flex flex-wrap gap-2 p-3 border rounded" style={{
@@ -570,7 +500,6 @@ export default function AdminUpdateForm() {
                 </div>
               </div>
 
-              {errors.keywordIds && <small className="text-danger d-block mt-2">{errors.keywordIds}</small>}
 
 
               {/* Media Section */}
@@ -703,25 +632,7 @@ export default function AdminUpdateForm() {
                 </button>
 
                 <div className="d-flex gap-3">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setFiles({ BusinessLogo: null, BusinessCard: null });
-                      setPreviewLogo(null);
-                      setPreviewCard(null);
-                    }}
-                    className="btn"
-                    style={{
-                      color: colors.secondary.dark,
-                      backgroundColor: colors.secondary.light + "40",
-                      borderColor: colors.secondary.main,
-                      borderRadius: "8px",
-                      padding: "10px 25px"
-                    }}
-                    disabled={loading}
-                  >
-                    Reset Changes
-                  </button>
+
 
                   <button
                     type="submit"
@@ -740,7 +651,6 @@ export default function AdminUpdateForm() {
                       </>
                     ) : (
                       <>
-                        <FiCheck className="me-2" />
                         Update Business
                       </>
                     )}
