@@ -15,7 +15,7 @@ export function getEncryptedToken() {
     }
   ).toString();
 
-  console.log(encrypted)
+  // console.log(encrypted)
 
   return encrypted;
 }
